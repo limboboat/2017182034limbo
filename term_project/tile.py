@@ -7,7 +7,7 @@ GENERATION_TILE_SIZE = 50, 75
 LONG_TILE_SIZE = 50, 150
 
 class Tile:
-
+    SCORE =0
     start = None
     TYPE_1, TYPE_2, TYPE_3 = range(3)
 
@@ -23,9 +23,10 @@ class Tile:
             self.image = gfw.image.load(gobj.res('긴타일.png'))
             self.rect = GENERATION_TILE_SIZE[0], GENERATION_TILE_SIZE[1]
         self.success_tile = False
-        self.miss_tile = False
         self.sound_time = 0
-
+        self.miss_tile = False
+        self.mouse_x=0
+        self.mouse_y=0
     def update(self):
         pass
 
@@ -35,15 +36,20 @@ class Tile:
     def handle_event(self, e):
         if e.type == SDL_MOUSEBUTTONDOWN and e.button == SDL_BUTTON_LEFT:
             pos = gobj.mouse_xy(e)
-            if gobj.pt_in_rect(pos, self.get_bb()) == True:
-                self.success_tile = True
-                return True
-            elif gobj.pt_in_rect(pos, self.get_bb()) == False:
-                self.miss_tile = True
-                return True
+            self.check_collision(pos[0],pos[1])
 
     def move(self, dy):
         self.y += dy
+
+    def check_collision(self,mx,my):
+        if gobj.pt_in_rect((mx,my), self.get_bb()) == True:
+            self.success_tile = True
+            self.image = gfw.image.load(gobj.res('빈타일.png'))
+            self.SCORE += 1
+       # else:
+       #     self.miss_tile = True
+       #     self.image = gfw.image.load(gobj.res('놓친타일.png'))
+
 
     def check_disappearing_tile(self):
         if self.y + self.y < 150:

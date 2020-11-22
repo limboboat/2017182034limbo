@@ -4,7 +4,7 @@ import gobj
 from tile import Tile
 
 
-UNIT_PER_LINE = 77
+UNIT_PER_LINE = 190
 SCREEN_LINES = 4
 BLOCK_SIZE = (100, 150)
 
