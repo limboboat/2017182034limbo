@@ -97,6 +97,7 @@ def update():
                 obj.image = gfw.image.load(gobj.res('놓친타일.png'))
                 obj.miss_tile = True
                 END = True
+
         if PAUSE_TILE == False:
             stage_gen.update(dy)
 
