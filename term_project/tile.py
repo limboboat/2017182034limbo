@@ -9,9 +9,7 @@ LONG_TILE_SIZE = 50, 150
 class Tile:
     SCORE =0
     start = None
-    PLAY_SOUND = False
     TYPE_1, TYPE_2, TYPE_3 = range(3)
-    FAIL = False
 
     def __init__(self, type, x, y):
         self.x, self.y = x, y
@@ -27,8 +25,8 @@ class Tile:
         self.success_tile = False
         self.sound_time = 0
         self.miss_tile = False
-        self.coiision_switch = False
-
+        self.mouse_x=0
+        self.mouse_y=0
     def update(self):
         pass
 
@@ -36,25 +34,27 @@ class Tile:
         self.image.draw(self.x, self.y)
 
     def handle_event(self, e):
-        pass
+        if e.type == SDL_MOUSEBUTTONDOWN and e.button == SDL_BUTTON_LEFT:
+            pos = gobj.mouse_xy(e)
+            self.check_collision(pos[0],pos[1])
 
     def move(self, dy):
         self.y += dy
 
-    def check_collision(self,pos):
-        if gobj.pt_in_rect(pos, self.get_bb()):
+    def check_collision(self,mx,my):
+        if gobj.pt_in_rect((mx,my), self.get_bb()) == True:
             self.success_tile = True
             self.image = gfw.image.load(gobj.res('빈타일.png'))
-            self.SCORE += 1
-            return True
-        else:
-            return False
+            Tile.SCORE += 1
+       # else:
+       #     self.miss_tile = True
+       #     self.image = gfw.image.load(gobj.res('놓친타일.png'))
+
 
     def check_disappearing_tile(self):
         if self.y + self.y < 150:
             return True
         return False
-
     def get_bb(self):
         return (
             self.x - self.rect[0], self.y - self.rect[1],
