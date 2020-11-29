@@ -24,6 +24,15 @@ SCORE_TEXT_COLOR = (10, 10, 10)
 PAUSE_TILE = False
 collision_count = 0
 
+KEY_CONFIGS = [
+    [ SDLK_d, SDLK_f, SDLK_j, SDLK_k ],
+    [ SDLK_a, SDLK_s, SDLK_d, SDLK_f ],
+    [ SDLK_j, SDLK_k, SDLK_l, SDLK_SEMICOLON ],
+]
+KEY_CONFIG_NAMES = [ "DFJK", "ASDF", "JKL;" ]
+key_config_index = 0
+KEYS = KEY_CONFIGS[key_config_index]
+
 def enter():
     global sound, check_start, font, title_font
     gfw.world.init(['bg', 'tile', 'ui'])
@@ -98,6 +107,15 @@ def draw():
 
                 # gobj.draw_collision_box()
 
+def process_input(key_index):
+    print('key:', key_index)
+
+def change_key_configs():
+    global key_config_index, KEYS
+    key_config_index = (key_config_index + 1) % len(KEY_CONFIGS)
+    KEYS = KEY_CONFIGS[key_config_index]
+    print('key config:', key_config_index, KEY_CONFIG_NAMES[key_config_index])
+
 def handle_event(e):
     global sound, check_start, score, END, PAUSE_TILE, collision_count
     if e.type == SDL_MOUSEBUTTONDOWN and e.button == SDL_BUTTON_LEFT:
@@ -109,9 +127,11 @@ def handle_event(e):
         if e.key == SDLK_ESCAPE:
             return gfw.change(result)
         elif e.key == SDLK_p:
-            PAUSE_TILE = True
-        elif e.key == SDLK_s:
-            PAUSE_TILE = False
+            PAUSE_TILE = not PAUSE_TILE
+        elif e.key == SDLK_TAB:
+            change_key_configs()
+        elif e.key in KEYS:
+            process_input(KEYS.index(e.key))
 
     for obj in gfw.world.objects_at(gfw.layer.tile):
         obj.handle_event(e)
