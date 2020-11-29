@@ -31,7 +31,7 @@ def handle_event(e):
         return gfw.quit()
     elif e.type == SDL_KEYDOWN:
         if e.key == SDLK_RETURN:
-            return gfw.change(main_state)
+            return gfw.push(main_state)
 
 def handle_mouse(e):
     pass
