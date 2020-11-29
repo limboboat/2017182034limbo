@@ -49,6 +49,13 @@ def enter():
     global last_mouse_pos_image
     last_mouse_pos_image = gfw.image.load(gobj.res('target.png'))
 
+    global END, check_start, play_speed, collision_count
+    END = False
+    check_start = False
+    play_sound_time = 0
+    collision_count = 0
+    Tile.start = False
+
     evts = get_events()
     for e in evts:
         handle_event(e)
