@@ -104,6 +104,7 @@ def draw():
         title_font.draw(60, 80, "최고 점수:", SCORE_TEXT_COLOR)
 
     font.draw(score_x, score_y, "%.0f" % Tile.SCORE, (255, 0, 0))
+    font.draw(300, score_y, KEY_CONFIG_NAMES[key_config_index], (55, 55, 0))
 
                 # gobj.draw_collision_box()
 
