@@ -30,8 +30,8 @@ def handle_event(e):
     elif e.type == SDL_KEYDOWN:
         if e.key == SDLK_ESCAPE:
             return gfw.pop()
-        elif e.key == SDLK_s:
-            return gfw.change(menu_state)
+        elif e.key == SDLK_RETURN:
+            return gfw.pop()
 
 def exit():
     pass

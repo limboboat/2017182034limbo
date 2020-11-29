@@ -24,6 +24,17 @@ SCORE_TEXT_COLOR = (10, 10, 10)
 PAUSE_TILE = False
 collision_count = 0
 
+KEY_CONFIGS = [
+    [ SDLK_d, SDLK_f, SDLK_j, SDLK_k ],
+    [ SDLK_a, SDLK_s, SDLK_d, SDLK_f ],
+    [ SDLK_j, SDLK_k, SDLK_l, SDLK_SEMICOLON ],
+]
+KEY_CONFIG_NAMES = [ "DFJK", "ASDF", "JKL;" ]
+key_config_index = 0
+KEYS = KEY_CONFIGS[key_config_index]
+
+last_mouse_pos = (5000, 5000)
+
 def enter():
     global sound, check_start, font, title_font
     gfw.world.init(['bg', 'tile', 'ui'])
@@ -34,6 +45,16 @@ def enter():
     sound = load_music(gobj.res('반짝반짝작은별.mp3'))
     font = gfw.font.load(gobj.res('NanumGothic.TTF'), FONT_SIZE + 20)
     title_font = gfw.font.load(gobj.res('NanumGothic.TTF'), FONT_SIZE)
+
+    global last_mouse_pos_image
+    last_mouse_pos_image = gfw.image.load(gobj.res('target.png'))
+
+    global END, check_start, play_speed, collision_count
+    END = False
+    check_start = False
+    play_sound_time = 0
+    collision_count = 0
+    Tile.start = False
 
     evts = get_events()
     for e in evts:
@@ -63,6 +84,9 @@ def update():
                 dy = -TILE_SPEED * gfw.delta_time
         else:
             dy = 0
+
+        global last_mouse_pos
+        last_mouse_pos = last_mouse_pos[0], last_mouse_pos[1] + dy
 
         for obj in gfw.world.objects_at(gfw.layer.tile):
             if PAUSE_TILE == False:
@@ -95,13 +119,28 @@ def draw():
         title_font.draw(60, 80, "최고 점수:", SCORE_TEXT_COLOR)
 
     font.draw(score_x, score_y, "%.0f" % Tile.SCORE, (255, 0, 0))
+    font.draw(300, score_y, KEY_CONFIG_NAMES[key_config_index], (55, 55, 0))
 
+    last_mouse_pos_image.draw(*last_mouse_pos)
                 # gobj.draw_collision_box()
+
+def process_input(key_index):
+    print('key:', key_index)
+    y = 250 if Tile.start else 300
+    pos = 50 + key_index * 100, y
+    handle_mouse_click(pos)
+
+def change_key_configs():
+    global key_config_index, KEYS
+    key_config_index = (key_config_index + 1) % len(KEY_CONFIGS)
+    KEYS = KEY_CONFIGS[key_config_index]
+    print('key config:', key_config_index, KEY_CONFIG_NAMES[key_config_index])
 
 def handle_event(e):
     global sound, check_start, score, END, PAUSE_TILE, collision_count
     if e.type == SDL_MOUSEBUTTONDOWN and e.button == SDL_BUTTON_LEFT:
         pos = gobj.mouse_xy(e)
+        handle_mouse_click(pos)
 
     if e.type == SDL_QUIT:
         return gfw.quit()
@@ -109,12 +148,21 @@ def handle_event(e):
         if e.key == SDLK_ESCAPE:
             return gfw.change(result)
         elif e.key == SDLK_p:
-            PAUSE_TILE = True
-        elif e.key == SDLK_s:
-            PAUSE_TILE = False
+            PAUSE_TILE = not PAUSE_TILE
+        elif e.key == SDLK_TAB:
+            change_key_configs()
+        elif e.key in KEYS:
+            process_input(KEYS.index(e.key))
+
+    if e.type == SDL_MOUSEBUTTONDOWN and e.button == SDL_BUTTON_LEFT:
+        pos = gobj.mouse_xy(e)
+
+def handle_mouse_click(pos):
+    global last_mouse_pos
+    last_mouse_pos = pos
 
     for obj in gfw.world.objects_at(gfw.layer.tile):
-        obj.handle_event(e)
+        obj.check_collision(pos)
 
         if obj.success_tile:
             if check_start:

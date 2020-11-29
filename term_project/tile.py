@@ -33,16 +33,16 @@ class Tile:
     def draw(self):
         self.image.draw(self.x, self.y)
 
-    def handle_event(self, e):
-        if e.type == SDL_MOUSEBUTTONDOWN and e.button == SDL_BUTTON_LEFT:
-            pos = gobj.mouse_xy(e)
-            self.check_collision(pos[0],pos[1])
+    # def handle_event(self, e):
+    #     if e.type == SDL_MOUSEBUTTONDOWN and e.button == SDL_BUTTON_LEFT:
+    #         pos = gobj.mouse_xy(e)
+    #         self.check_collision(pos)
 
     def move(self, dy):
         self.y += dy
 
-    def check_collision(self,mx,my):
-        if gobj.pt_in_rect((mx,my), self.get_bb()) == True:
+    def check_collision(self, pos):
+        if gobj.pt_in_rect(pos, self.get_bb()):
             self.success_tile = True
             self.image = gfw.image.load(gobj.res('빈타일.png'))
             Tile.SCORE += 1
