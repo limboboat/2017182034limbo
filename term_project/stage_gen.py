@@ -4,7 +4,7 @@ import gobj
 from tile import Tile
 
 
-UNIT_PER_LINE = 190
+UNIT_PER_LINE = 570
 SCREEN_LINES = 4
 BLOCK_SIZE = (100, 150)
 
@@ -23,6 +23,10 @@ def update(dy):
     current_y += dy
     while current_y < create_at:
         create_column()
+
+def get_map_index():
+    global map_index
+    return map_index
 
 def create_column():
     global current_y, map_index
