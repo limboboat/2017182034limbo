@@ -36,8 +36,8 @@ def enter():
     gfw.world.add(gfw.layer.ui, gobj.ImageObject('시작 제목.png', (200, 100)))
     stage_gen.load(gobj.res('tile.txt'))
     sound = load_music(gobj.res('반짝반짝작은별.mp3'))
-    sound2 = load_music(gobj.res('반짝반짝작은별.mp3'))
-    sound3 = load_music(gobj.res('반짝반짝작은별.mp3'))
+    sound2 = load_music(gobj.res('반짝반짝작은별2.mp3'))
+    sound3 = load_music(gobj.res('반짝반짝작은별3.mp3'))
     font = gfw.font.load(gobj.res('NanumGothic.TTF'), FONT_SIZE + 20)
     title_font = gfw.font.load(gobj.res('NanumGothic.TTF'), FONT_SIZE)
     highscore.load(FONT_SIZE)
@@ -111,15 +111,15 @@ def update():
                 END = True
             if stage_gen.get_map_index() == 570:
                 END = True
-            if stage_gen.get_map_index() ==190:
-                TILE_SPEED = 800
+            if stage_gen.get_map_index() ==193:
+                TILE_SPEED = 650
                 sound.stop()
-            elif stage_gen.get_map_index() ==193:
+            elif stage_gen.get_map_index() ==198:
                 sound2.play()
-            elif stage_gen.get_map_index() ==370:
-                TILE_SPEED = 1000
+            elif stage_gen.get_map_index() ==375:
+                TILE_SPEED = 670
                 sound2.stop()
-            elif stage_gen.get_map_index() ==383:
+            elif stage_gen.get_map_index() ==388:
                 sound3.play()
 
         if PAUSE_TILE == False:
@@ -151,8 +151,10 @@ def handle_event(e):
             return gfw.change(result)
         elif e.key == SDLK_p:
             PAUSE_TILE = True
+            sound.pause()
         elif e.key == SDLK_s:
             PAUSE_TILE = False
+            sound.resume()
 
     for obj in gfw.world.objects_at(gfw.layer.tile):
         obj.handle_event(e)
@@ -171,9 +173,10 @@ def handle_event(e):
         obj.sound_time = 0
 
 
+
 def exit():
-    global sound
-    del sound
+    global sound ,sound2, sound3
+    del sound, sound2, sound3
     gfw.time.sleep(0.7)
     pass
 
